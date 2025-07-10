@@ -1,4 +1,8 @@
 ---
+/* 组件说明区 */
+const componentName = "HeaderParallax";
+const componentDescription = "带视差背景和动画人物的头部组件，包含动态高度动画效果，在背景图片和人物图片加载完成后触发，使用类封装脚本逻辑以提高可维护性。";
+
 const { height = '80vh', title = '青花卓越' } = Astro.props;
 
 const headerData = {
@@ -14,8 +18,8 @@ const headerData = {
 };
 ---
 
-<!-- HeaderParallax.astro --><!-- 带视差背景和动画人物的头部组件 --><!-- data 部分 --><!-- html 部分 -->
-<div class="header-content" style={`--header-height: ${height}`}>
+<!-- HTML 区域 -->
+<div class="header-content">
   <div
     id="parallaxbg"
     class="parallaxbg"
@@ -33,7 +37,7 @@ const headerData = {
       <h3>{headerData.subtitle}</h3>
       <h3>
         <i class="fas fa-phone-alt"></i>
-        {headerData.contact.phone} &nbsp;&nbsp; &nbsp;
+        {headerData.contact.phone}     
         <i class="fas fa-envelope"></i>
         {headerData.contact.email}
       </h3>
@@ -42,13 +46,12 @@ const headerData = {
 
   <slot name="waves" />
   <slot name="menu" />
-
 </div>
 
-
-<!-- css 部分 -->
+<!-- Style 区域 -->
 <style>
   :root { 
+    --header-height: 50vh;
     --log-size: 6em;
   }
 
@@ -64,6 +67,7 @@ const headerData = {
     background-size: cover;
     background-position: center;
     overflow: hidden;
+    transition: height 1s ease;
   }
 
   .header-content .parallaxbg {
@@ -193,40 +197,142 @@ const headerData = {
   }
 </style>
 
-<!-- script 部分 -->
+<!-- Script 区域 -->
 <script>
-  /**
-   * 增强版视差效果函数
-   * @param {HTMLElement} element - 要应用视差的元素
-   * @param {Object} [options] - 配置选项
-   * @param {number} [options.intensity=0.1] - 视差强度 (0-1)
-   * @param {boolean} [options.center=false] - 是否强制居中
-   * @param {string} [options.axis='xy'] - 视差轴 ('x', 'y' 或 'xy')
-   */
-  function applyParallax(element, options = {}) {
-    const config = {
-      intensity: 0.1,
-      center: false,
-      axis: "xy",
-      ...options,
-    };
-
-    if (!element || !(element instanceof HTMLElement)) {
-      console.error("无效的元素");
-      return null;
+  class ParallaxHeader {
+    constructor() {
+      this.parallaxBg = document.querySelector(".parallaxbg");
+      this.girl = document.querySelector(".girl");
+      this.headerContent = document.querySelector(".header-content");
+      this.rafId = null;
+      this.lastMove = { x: 0, y: 0 };
+      this.bgImageUrl = "${headerData.bgImage}";
+      this.girlImageUrl = "${headerData.girlImage}";
     }
 
-    const initialTransform = window.getComputedStyle(element).transform;
-    const initialPosition = {
-      left: element.style.left,
-      top: element.style.top,
-      bottom: element.style.bottom,
-    };
+    init() {
+      // 等待图片加载完成
+      const loadImage = (url) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = url;
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+      };
 
-    let rafId = null;
-    let lastMove = { x: 0, y: 0 };
+      Promise.all([
+        loadImage(this.bgImageUrl),
+        loadImage(this.girlImageUrl)
+      ]).then(() => {
+        // 图片加载完成后触发高度动画
+        if (this.headerContent) {
+          setTimeout(() => {
+            this.headerContent.style.setProperty("--header-height", "80vh");
+          }, 0);
+        }
+      }).catch((error) => {
+        console.error("图片加载失败:", error);
+        // 即使图片加载失败，也触发高度动画
+        if (this.headerContent) {
+          setTimeout(() => {
+            this.headerContent.style.setProperty("--header-height", "80vh");
+          }, 0);
+        }
+      });
 
-    function getMaxMovement() {
+      // 初始化视差效果
+      if (this.parallaxBg) {
+        this.applyParallax(this.parallaxBg, {
+          intensity: 0.5,
+          center: true,
+          axis: "xy",
+        });
+      }
+
+      if (this.girl) {
+        this.applyParallax(this.girl, {
+          intensity: 0.05,
+          center: false,
+          axis: "x",
+        });
+      }
+    }
+
+    applyParallax(element, options = {}) {
+      const config = {
+        intensity: 0.1,
+        center: false,
+        axis: "xy",
+        ...options,
+      };
+
+      if (!element || !(element instanceof HTMLElement)) {
+        console.error("无效的元素");
+        return;
+      }
+
+      const initialTransform = window.getComputedStyle(element).transform;
+      const initialPosition = {
+        left: element.style.left,
+        top: element.style.top,
+        bottom: element.style.bottom,
+      };
+
+      const updatePosition = () => {
+        const max = this.getMaxMovement(element);
+        const moveX = config.axis.includes("x")
+          ? this.lastMove.x * max.x * config.intensity
+          : 0;
+        const moveY = config.axis.includes("y")
+          ? this.lastMove.y * max.y * config.intensity
+          : 0;
+
+        let transform = initialTransform === "none" ? "" : initialTransform;
+        if (config.center) {
+          transform = `translate(-50%, -50%) translate(${-moveX}px, ${-moveY}px)`;
+        } else {
+          transform += ` translate(${-moveX}px, ${-moveY}px)`;
+        }
+        element.style.transform = transform;
+        this.rafId = null;
+      };
+
+      const handleMove = (e) => {
+        const clientX = e.clientX ?? e.touches?.[0]?.clientX;
+        const clientY = e.clientY ?? e.touches?.[0]?.clientY;
+
+        if (clientX === undefined || clientY === undefined) return;
+
+        this.lastMove = {
+          x: (clientX / window.innerWidth - 0.5) * 2,
+          y: (clientY / window.innerHeight - 0.5) * 2,
+        };
+
+        if (!this.rafId) {
+          this.rafId = requestAnimationFrame(updatePosition);
+        }
+      };
+
+      const handleResize = () => {
+        if (this.rafId) cancelAnimationFrame(this.rafId);
+        updatePosition();
+      };
+
+      window.addEventListener("mousemove", handleMove);
+      window.addEventListener("touchmove", handleMove, { passive: true });
+      window.addEventListener("resize", handleResize);
+
+      this.cleanup = () => {
+        window.removeEventListener("mousemove", handleMove);
+        window.removeEventListener("touchmove", handleMove);
+        window.removeEventListener("resize", handleResize);
+        if (this.rafId) cancelAnimationFrame(this.rafId);
+        element.style.transform = initialTransform;
+      };
+    }
+
+    getMaxMovement(element) {
       const parent = element.parentElement || document.documentElement;
       return {
         x: (element.offsetWidth - parent.offsetWidth) / 2,
@@ -234,77 +340,13 @@ const headerData = {
       };
     }
 
-    function updatePosition() {
-      const max = getMaxMovement();
-      const moveX = config.axis.includes("x")
-        ? lastMove.x * max.x * config.intensity
-        : 0;
-      const moveY = config.axis.includes("y")
-        ? lastMove.y * max.y * config.intensity
-        : 0;
-
-      let transform = initialTransform === "none" ? "" : initialTransform;
-      if (config.center) {
-        transform = `translate(-50%, -50%) translate(${-moveX}px, ${-moveY}px)`;
-      } else {
-        transform += ` translate(${-moveX}px, ${-moveY}px)`;
-      }
-      element.style.transform = transform;
-      rafId = null;
+    destroy() {
+      if (this.cleanup) this.cleanup();
     }
-
-    function handleMove(e) {
-      const clientX = e.clientX ?? e.touches?.[0]?.clientX;
-      const clientY = e.clientY ?? e.touches?.[0]?.clientY;
-
-      if (clientX === undefined || clientY === undefined) return;
-
-      lastMove = {
-        x: (clientX / window.innerWidth - 0.5) * 2,
-        y: (clientY / window.innerHeight - 0.5) * 2,
-      };
-
-      if (!rafId) {
-        rafId = requestAnimationFrame(updatePosition);
-      }
-    }
-
-    function handleResize() {
-      if (rafId) cancelAnimationFrame(rafId);
-      updatePosition();
-    }
-
-    window.addEventListener("mousemove", handleMove);
-    window.addEventListener("touchmove", handleMove, { passive: true });
-    window.addEventListener("resize", handleResize);
-
-    return function cleanup() {
-      window.removeEventListener("mousemove", handleMove);
-      window.removeEventListener("touchmove", handleMove);
-      window.removeEventListener("resize", handleResize);
-      if (rafId) cancelAnimationFrame(rafId);
-      element.style.transform = initialTransform;
-    };
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    const parallaxBg = document.querySelector(".parallaxbg");
-    const girl = document.querySelector(".girl");
-
-    if (parallaxBg) {
-      applyParallax(parallaxBg, {
-        intensity: 0.5,
-        center: true,
-        axis: "xy",
-      });
-    }
-
-    if (girl) {
-      applyParallax(girl, {
-        intensity: 0.05,
-        center: false,
-        axis: "x",
-      });
-    }
+    const parallaxHeader = new ParallaxHeader();
+    parallaxHeader.init();
   });
 </script>
