@@ -13,6 +13,8 @@ const headerData = {
     phone: "13640566324 18883919122",
     email: "504677424@qq.com",
   },
+
+  // bgImage: "https://picsum.photos/1600/900",
   bgImage: "/assets/images/bg.png",
   girlImage: "/assets/images/girl.png",
 };
@@ -20,12 +22,9 @@ const headerData = {
 
 <!-- HTML 区域 -->
 <div class="header-content">
-  <div
-    id="parallaxbg"
-    class="parallaxbg"
-    style={`background-image: linear-gradient(60deg, rgba(36, 23, 87, 0.9), rgba(10, 87, 97, 0.9)), url(${headerData.bgImage})`}
-  >
+  <div id="parallaxbg" class="parallaxbg" style={`background-image: linear-gradient(60deg, rgba(36, 23, 87, 0.9), rgba(10, 87, 97, 0.8)), url(${headerData.bgImage})`}>
   </div>
+
   <div class="girl" style={`background-image: url(${headerData.girlImage})`}>
   </div>
   <div class="header-title">
@@ -37,7 +36,7 @@ const headerData = {
       <h3>{headerData.subtitle}</h3>
       <h3>
         <i class="fas fa-phone-alt"></i>
-        {headerData.contact.phone}     
+        {headerData.contact.phone}
         <i class="fas fa-envelope"></i>
         {headerData.contact.email}
       </h3>

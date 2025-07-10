@@ -23,19 +23,35 @@
 </style>
 
 <!-- Script -->
+ 
 <script type="module" client:load>
+  const config = {
+    ballCount: 38,             // 初始球数量
+    baseInterval: 1000,        // 新球生成基准间隔 (ms)
+    gravity: 0.99,             // 重力系数
+    fadeSpeed: 0.005,          // 透明度减少速度
+    shrinkSpeed: 0.05,         // 缩小速度
+    growthOnHover: 1,          // 鼠标靠近时增长速度
+    maxRadius: 50,             // 最大半径
+    interferenceRadius: 100,   // 鼠标干扰半径
+    interferenceFactor: 1.0,   // 干扰力强度
+    minBallCount: 12,          // 保证最少数量
+    spawnRadiusX: 80,          // X轴鼠标附近产生球的范围
+    speedScale: 0.05           // 鼠标速度乘数，控制产卵数量
+  };
+
   class Ball {
     constructor(width, height) {
       this.color = Ball.randomColor();
       this.radius = Math.random() * 20 + 14;
       this.startradius = this.radius;
       this.x = Math.random() * (width - this.radius * 2) + this.radius;
-      this.y = height - this.radius; // ✅ 从底部出现
-      this.dy = -Math.random() * 4 - 2; // ✅ 初速度向上
+      this.y = height - this.radius; // 始终在底部出现
+      this.dy = -Math.random() * 4 - 2; // 初速度向上
       this.dx = Math.round((Math.random() - 0.5) * 10);
       this.vel = Math.random() / 5;
-      this.alpha = 1;  // ✅ 初始透明度
-      this.life = 1;   // ✅ 生命状态
+      this.alpha = 1;
+      this.life = 1;
     }
 
     static randomColor() {
@@ -52,13 +68,24 @@
       ctx.restore();
     }
 
-    animate(width, height, gravity, mouseX, mouseY) {
+    animate(width, height, gravity, mouseX, mouseY, config) {
+      if (mouseX !== null && mouseY !== null) {
+        const distX = this.x - mouseX;
+        const distY = this.y - mouseY;
+        const dist = Math.sqrt(distX * distX + distY * distY);
+        if (dist < config.interferenceRadius && dist > 0) {
+          const force = (config.interferenceRadius - dist) / config.interferenceRadius * config.interferenceFactor;
+          this.dx += (distX / dist) * force;
+          this.dy += (distY / dist) * force;
+        }
+      }
+
       this.y += this.dy;
       this.x += this.dx;
 
       if (this.y + this.radius >= height) {
         this.dy = -this.dy * gravity;
-        this.y = height - this.radius; // 防止卡住底部
+        this.y = height - this.radius;
       } else {
         this.dy += this.vel;
       }
@@ -72,16 +99,15 @@
         mouseX < this.x + 20 &&
         mouseY > this.y - 50 &&
         mouseY < this.y + 50 &&
-        this.radius < 70
+        this.radius < config.maxRadius
       ) {
-        this.radius += 3;
+        this.radius += config.growthOnHover;
       } else if (this.radius > this.startradius) {
-        this.radius -= 1.5;
+        this.radius -= config.growthOnHover / 2;
       }
 
-      // ✅ 开始淡出
-      this.alpha -= 0.005;
-      this.radius -= 0.05;
+      this.alpha -= config.fadeSpeed;
+      this.radius -= config.shrinkSpeed;
       if (this.alpha <= 0 || this.radius <= 0) {
         this.life = 0;
       }
@@ -89,15 +115,18 @@
   }
 
   class BallAnimation {
-    constructor(canvasId, count = 12) {
+    constructor(canvasId) {
       this.canvas = document.getElementById(canvasId);
       this.ctx = this.canvas.getContext("2d");
       this.balls = [];
-      this.gravity = 0.99;
-      this.mouseX = 0;
-      this.mouseY = 0;
+      this.gravity = config.gravity;
+      this.mouseX = null;
+      this.mouseY = null;
+      this.lastMouseX = null;
+      this.lastMouseY = null;
+      this.mouseSpeed = 0;
       this.initCanvasSize();
-      this.initBalls(count);
+      this.initBalls(config.ballCount);
       this.registerEvents();
       this.animate();
       this.startInterval();
@@ -117,8 +146,23 @@
     initBalls(count) {
       const { width, height } = this.getParentSize();
       for (let i = 0; i < count; i++) {
-        this.balls.push(new Ball(width, height));
+        this.spawnBall(width, height);
       }
+    }
+
+    spawnBall(width, height) {
+      let x;
+      if (this.mouseX !== null) {
+        // X坐标在鼠标附近随机，Y坐标固定在底部
+        x = this.mouseX + (Math.random() - 0.5) * config.spawnRadiusX * 2;
+      } else {
+        x = Math.random() * width;
+      }
+      x = Math.min(Math.max(20, x), width - 20); // 保证x在画布内
+      const ball = new Ball(width, height);
+      ball.x = x;
+      ball.y = height - ball.radius; // 底部
+      this.balls.push(ball);
     }
 
     registerEvents() {
@@ -126,6 +170,22 @@
       window.addEventListener("mousemove", (e) => {
         this.mouseX = e.clientX;
         this.mouseY = e.clientY;
+
+        // 计算鼠标移动速度
+        if (this.lastMouseX !== null && this.lastMouseY !== null) {
+          const dx = this.mouseX - this.lastMouseX;
+          const dy = this.mouseY - this.lastMouseY;
+          this.mouseSpeed = Math.sqrt(dx * dx + dy * dy);
+        }
+        this.lastMouseX = this.mouseX;
+        this.lastMouseY = this.mouseY;
+
+        // 根据鼠标速度动态生成新球体，速度越快，球越多
+        const spawnCount = Math.min(Math.floor(this.mouseSpeed * config.speedScale), 10);
+        const { width, height } = this.getParentSize();
+        for (let i = 0; i < spawnCount; i++) {
+          this.spawnBall(width, height);
+        }
       });
     }
 
@@ -133,13 +193,19 @@
       const loop = () => {
         const { width, height } = this.getParentSize();
         this.ctx.clearRect(0, 0, width, height);
+
         for (const ball of this.balls) {
           ball.update(this.ctx);
-          ball.animate(width, height, this.gravity, this.mouseX, this.mouseY);
+          ball.animate(width, height, this.gravity, this.mouseX, this.mouseY, config);
         }
 
-        // ✅ 只保留仍然“活着”的 ball
-        this.balls = this.balls.filter((b) => b.life > 0);
+        // 移除死亡球体
+        this.balls = this.balls.filter(b => b.life > 0);
+
+        // 保证最少数量
+        if (this.balls.length < config.minBallCount) {
+          this.spawnBall(width, height);
+        }
 
         requestAnimationFrame(loop);
       };
@@ -149,10 +215,12 @@
     startInterval() {
       setInterval(() => {
         const { width, height } = this.getParentSize();
-        this.balls.push(new Ball(width, height));
-      }, 400);
+        this.spawnBall(width, height);
+      }, config.baseInterval);
     }
   }
 
   new BallAnimation("ballCanvas");
 </script>
+
+

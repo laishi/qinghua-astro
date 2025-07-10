@@ -41,6 +41,10 @@ const waveData = {
 
 <!-- css 部分 -->
 <style>
+:root {
+  --wave-color: rgb(200, 200, 200);
+}
+
 .wave-content {
   position: absolute;
   bottom: 0;
@@ -48,19 +52,13 @@ const waveData = {
   overflow: hidden;
   pointer-events: none;
 }
+
 .waves {
   display: block;
   width: 100%;
-  height: 15vh;
+  /* height: 15vh; */
   min-height: 100px;
   max-height: 150px;
-  --wave-r: 200;
-  --wave-g: 200;
-  --wave-b: 200;
-
-  --wave-l1: 10;
-  --wave-l2: 20;
-  --wave-l3: 30;
 }
 
 .waves .parallax > use,
@@ -71,42 +69,30 @@ const waveData = {
 .waves .parallax > use:nth-child(1) {
   animation-delay: -2s;
   animation-duration: 4s;
-  fill: rgb(calc(var(--wave-r) + var(--wave-l3)), 
-             calc(var(--wave-g) + var(--wave-l3)), 
-             calc(var(--wave-b) + var(--wave-l3)));
+  fill: var(--wave-color);
   opacity: 0.4;
 }
 
 .waves .parallax > use:nth-child(2) {
   animation-delay: -3s;
   animation-duration: 3s;
-  fill: rgb(calc(var(--wave-r) + var(--wave-l2)), 
-             calc(var(--wave-g) + var(--wave-l2)), 
-             calc(var(--wave-b) + var(--wave-l2)));
+  fill: var(--wave-color);
   opacity: 0.6;
 }
 
 .waves .parallax > use:nth-child(3) {
   animation-delay: -4s;
   animation-duration: 3s;
-  fill: rgb(calc(var(--wave-r) + var(--wave-l1)), 
-             calc(var(--wave-g) + var(--wave-l1)), 
-             calc(var(--wave-b) + var(--wave-l1)));
+  fill: var(--wave-color);
   opacity: 0.8;
-}
-
-.waves .parallax > use:nth-child(4) {
-  animation-delay: -5s;
-  animation-duration: 2s;
-  fill: rgb(var(--wave-r), var(--wave-g), var(--wave-b));
-  opacity: 1;
 }
 
 .waves .parallax > use:nth-child(4),
 .waves .text-wave {
   animation-delay: -5s;
   animation-duration: 4s;
-  fill: rgb(var(--wave-r), var(--wave-g), var(--wave-b));
+  fill: var(--wave-color);
+  opacity: 1;
 }
 
 @keyframes move-forever {
@@ -117,6 +103,7 @@ const waveData = {
     transform: translate3d(0, 0, 0);
   }
 }
+
 </style>
 
 

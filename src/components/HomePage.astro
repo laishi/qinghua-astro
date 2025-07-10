@@ -50,9 +50,9 @@ const templates = [
 
 const tempPath = "./assets/qinghua-template/spa/";
 const tempLink = "./assets/pages/temp.html";
-
+const num = 23;
 // 根据页面决定显示全部还是前23个
-const gridData = templates.slice(0, 13)
+const gridData = templates.slice(0, num)
   .map((template, index) => ({
     id: index,
     linkurl: `${tempPath}${template.name}/index.html`,
@@ -66,7 +66,7 @@ const gridData = templates.slice(0, 13)
 <!-- HTML 部分 -->
 <div class="mainPage">
 
-  <HeaderParallax height="80vh" title="青花卓越">
+  <HeaderParallax height="100vh" title="青花卓越">
       <Waves slot="waves" />
       <Menu slot="menu" />
   </HeaderParallax>
@@ -81,7 +81,9 @@ const gridData = templates.slice(0, 13)
     <div class="pageSlider">
       <div class="homePage">
         <div class="gridHeader">
-          <div class="card"></div>
+          <div class="card">
+            <h3> 模版展示 </h3>
+          </div>
         </div>
         <div class="detailGrids" id="detailGrids">
           {
@@ -176,27 +178,33 @@ const gridData = templates.slice(0, 13)
 
 .card {
   position: relative;
-  width: 190px;
-  height: 254px;
+  width: 10em;
+  height: 15em;
   background: rgb(255, 0, 179);
-  background: linear-gradient(137deg, rgb(255, 0, 179) 0%, rgba(0,212,255,1) 100%);
+  background: linear-gradient(137deg, rgb(255, 0, 179) 0%, rgba(0, 212, 255, 1) 100%);
   transition: 0.3s ease;
-  border-radius: 30px;
-  filter: drop-shadow(0px 0px 30px rgba(209, 38, 197, 0.5));
+  border-radius: 2em;
+  filter: drop-shadow(0px 0px 2em rgba(209, 38, 197, 0.5));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card::after {
   content: '';
-  background-color: #181818;
+  background-color: rgba(24, 24, 24, 0.95);
   position: absolute;
-  z-index: 1;
   transition: 0.3s ease;
-  height: 98%;
-  width: 98%;
-  top: 1%;
-  left: 1%;
-  border-radius: 28px;
+  height: calc(100% - 10px);
+  width: calc(100% - 10px);
+  top: 50%;
+  left: 50%;
+  border-radius: 1.7em;
+  z-index: -1;
+  transform: translate(-50%, -50%);
 }
+
 
 .card:hover {
   filter: drop-shadow(0px 0px 30px rgba(209, 38, 197, 1));
@@ -657,11 +665,7 @@ const gridData = templates.slice(0, 13)
         }
       }
     }
-
-
-    
-
-
+ 
     bindEvents() {
       window.addEventListener("resize", () => this.reRow());
       window.addEventListener("popstate", (e) => this.handlePopState(e));
@@ -825,4 +829,5 @@ const gridData = templates.slice(0, 13)
   }
 
   const gallery = new SliderDetailGrid();
+
 </script>
