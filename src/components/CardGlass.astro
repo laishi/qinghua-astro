@@ -36,23 +36,21 @@ const services = [
 ];
 ---
 
-<section id="services">
-  <div class="services-container">
-    <div class="services-header">
-      <h2>极速建站 · 即刻盈利</h2>
-      <p>72小时打造高转化商业网站，让您的生意在互联网上闪闪发光</p>
-    </div>
-    <div class="services-grid">
-      {services.map((service, index) => (
-        <div class="service-item" key={index} style={`animation-delay: ${0.1 * (index + 1)}s`}>
-          <i class={service.iconClass}></i>
-          <h3>{service.title}</h3>
-          <p>{service.description}</p>
-        </div>
-      ))}
-    </div>
+<div class="services-container">
+  <div class="services-header">
+    <h2>极速建站 · 即刻盈利</h2>
+    <p>光彩呈现品牌魅力网站，助您事业全网耀眼生光</p>
   </div>
-</section>
+  <div class="services-grid">
+    {services.map((service, index) => (
+      <div class="service-item" key={index} style={`animation-delay: ${0.1 * (index + 1)}s`}>
+        <i class={service.iconClass}></i>
+        <h3>{service.title}</h3>
+        <p>{service.description}</p>
+      </div>
+    ))}
+  </div>
+</div>
 
 <style>
 :root {
@@ -66,19 +64,16 @@ const services = [
   --shadow-color: rgba(10, 100, 180, 0.15);
 }
 
-#services {
-  padding: 4em 1.5em;
-}
-
 .services-container {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding-bottom: 3em;
   background-color: var(--wave-color);
 }
 
 .services-header {
   text-align: center;
-  margin-bottom: 3em;
+  padding-bottom: 2em;
 }
 
 .services-header h2 {

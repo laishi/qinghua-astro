@@ -1,0 +1,158 @@
+---
+---
+
+<!-- HTML -->
+<div class="ball">
+  <canvas id="ballCanvas"></canvas>
+</div>
+
+<!-- CSS -->
+<style>
+  .ball {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<!-- Script -->
+<script type="module" client:load>
+  class Ball {
+    constructor(width, height) {
+      this.color = Ball.randomColor();
+      this.radius = Math.random() * 20 + 14;
+      this.startradius = this.radius;
+      this.x = Math.random() * (width - this.radius * 2) + this.radius;
+      this.y = height - this.radius; // ✅ 从底部出现
+      this.dy = -Math.random() * 4 - 2; // ✅ 初速度向上
+      this.dx = Math.round((Math.random() - 0.5) * 10);
+      this.vel = Math.random() / 5;
+      this.alpha = 1;  // ✅ 初始透明度
+      this.life = 1;   // ✅ 生命状态
+    }
+
+    static randomColor() {
+      return `rgba(${Math.floor(Math.random() * 250)},${Math.floor(Math.random() * 250)},${Math.floor(Math.random() * 250)},1)`;
+    }
+
+    update(ctx) {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    animate(width, height, gravity, mouseX, mouseY) {
+      this.y += this.dy;
+      this.x += this.dx;
+
+      if (this.y + this.radius >= height) {
+        this.dy = -this.dy * gravity;
+        this.y = height - this.radius; // 防止卡住底部
+      } else {
+        this.dy += this.vel;
+      }
+
+      if (this.x + this.radius > width || this.x - this.radius < 0) {
+        this.dx = -this.dx;
+      }
+
+      if (
+        mouseX > this.x - 20 &&
+        mouseX < this.x + 20 &&
+        mouseY > this.y - 50 &&
+        mouseY < this.y + 50 &&
+        this.radius < 70
+      ) {
+        this.radius += 3;
+      } else if (this.radius > this.startradius) {
+        this.radius -= 1.5;
+      }
+
+      // ✅ 开始淡出
+      this.alpha -= 0.005;
+      this.radius -= 0.05;
+      if (this.alpha <= 0 || this.radius <= 0) {
+        this.life = 0;
+      }
+    }
+  }
+
+  class BallAnimation {
+    constructor(canvasId, count = 12) {
+      this.canvas = document.getElementById(canvasId);
+      this.ctx = this.canvas.getContext("2d");
+      this.balls = [];
+      this.gravity = 0.99;
+      this.mouseX = 0;
+      this.mouseY = 0;
+      this.initCanvasSize();
+      this.initBalls(count);
+      this.registerEvents();
+      this.animate();
+      this.startInterval();
+    }
+
+    getParentSize() {
+      const rect = this.canvas.parentElement.getBoundingClientRect();
+      return { width: rect.width, height: rect.height };
+    }
+
+    initCanvasSize() {
+      const { width, height } = this.getParentSize();
+      this.canvas.width = width;
+      this.canvas.height = height;
+    }
+
+    initBalls(count) {
+      const { width, height } = this.getParentSize();
+      for (let i = 0; i < count; i++) {
+        this.balls.push(new Ball(width, height));
+      }
+    }
+
+    registerEvents() {
+      window.addEventListener("resize", () => this.initCanvasSize());
+      window.addEventListener("mousemove", (e) => {
+        this.mouseX = e.clientX;
+        this.mouseY = e.clientY;
+      });
+    }
+
+    animate() {
+      const loop = () => {
+        const { width, height } = this.getParentSize();
+        this.ctx.clearRect(0, 0, width, height);
+        for (const ball of this.balls) {
+          ball.update(this.ctx);
+          ball.animate(width, height, this.gravity, this.mouseX, this.mouseY);
+        }
+
+        // ✅ 只保留仍然“活着”的 ball
+        this.balls = this.balls.filter((b) => b.life > 0);
+
+        requestAnimationFrame(loop);
+      };
+      loop();
+    }
+
+    startInterval() {
+      setInterval(() => {
+        const { width, height } = this.getParentSize();
+        this.balls.push(new Ball(width, height));
+      }, 400);
+    }
+  }
+
+  new BallAnimation("ballCanvas");
+</script>

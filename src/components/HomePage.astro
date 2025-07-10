@@ -9,6 +9,7 @@ import Menu from "./Header/Menu.astro";
 
 import CardParallax from "./CardParallax.astro";
 import CardGlass from "./CardGlass.astro";
+import Ball from "./Ball.astro";
 
 import Footer from "./Footer.astro";
 
@@ -65,15 +66,17 @@ const gridData = templates.slice(0, 13)
 <!-- HTML 部分 -->
 <div class="mainPage">
 
-    <HeaderParallax height="80vh" title="青花卓越">
-        <Waves slot="waves" />
-        <Menu slot="menu" />
-    </HeaderParallax>
+  <HeaderParallax height="80vh" title="青花卓越">
+      <Waves slot="waves" />
+      <Menu slot="menu" />
+  </HeaderParallax>
 
-  <CardParallax />
-  <CardGlass />
+  <section id="servers">
+    <Ball />
+    <CardParallax />
+    <CardGlass />
+  </section>
   
-
   <section id="temp">
     <div class="pageSlider">
       <div class="homePage">
@@ -137,6 +140,12 @@ const gridData = templates.slice(0, 13)
     --ripple-easing: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
+  #servers{
+    position: relative;
+    /* height: 50vh; */
+    /* background-color: #0acc341e; */
+  }
+  
   .mainPage {
     position: relative;
     width: 100%;
