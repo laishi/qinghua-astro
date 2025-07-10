@@ -1,0 +1,345 @@
+<!-- CardGlass.astro -->
+
+<!-- data -->
+---
+const services = [
+  {
+    iconClass: "fas fa-chess-queen",
+    title: "商业级视觉设计",
+    description: "不是模板堆砌，而是为您量身定制能提升转化的视觉方案，让访客一眼爱上您的品牌",
+  },
+  {
+    iconClass: "fas fa-tachometer-alt",
+    title: "闪电开发引擎",
+    description: "采用模块化智能开发，72小时内交付完整商业网站，快人一步抢占市场先机",
+  },
+  {
+    iconClass: "fas fa-expand",
+    title: "全维度响应技术",
+    description: "从4K大屏到智能手表，您的网站始终完美呈现，不错过任何潜在客户",
+  },
+  {
+    iconClass: "fas fa-magic",
+    title: "智能交互体验",
+    description: "融入微交互动画与智能引导，让网站操作如行云流水，转化率提升300%",
+  },
+  {
+    iconClass: "fas fa-trophy",
+    title: "搜索引擎制霸",
+    description: "从代码层优化SEO架构，让您的网站稳居搜索结果首页，持续获取免费流量",
+  },
+  {
+    iconClass: "fas fa-universal-access",
+    title: "全平台生态覆盖",
+    description: "网站+小程序+公众号无缝衔接，构建您的商业闭环，让客户随时随地找到您",
+  },
+];
+---
+
+<section id="services">
+  <div class="services-container">
+    <div class="services-header">
+      <h2>极速建站 · 即刻盈利</h2>
+      <p>72小时打造高转化商业网站，让您的生意在互联网上闪闪发光</p>
+    </div>
+    <div class="services-grid">
+      {services.map((service, index) => (
+        <div class="service-item" key={index} style={`animation-delay: ${0.1 * (index + 1)}s`}>
+          <i class={service.iconClass}></i>
+          <h3>{service.title}</h3>
+          <p>{service.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+:root {
+  --primary-color: #32c8ff; /* 青蓝色主色 */
+  --primary-dark: #0a64b4; /* 深蓝色 */
+  --highlight-color: rgba(255, 255, 255, 0.85);
+  --glow-color: rgba(50, 200, 255, 0.4);
+  --text-color: #0a2d3a;
+  --subtext-color: #4a6b7a;
+  --card-bg: rgba(50, 200, 255, 0.08);
+  --shadow-color: rgba(10, 100, 180, 0.15);
+}
+
+#services {
+  padding: 4em 1.5em;
+}
+
+.services-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  background-color: var(--wave-color);
+}
+
+.services-header {
+  text-align: center;
+  margin-bottom: 3em;
+}
+
+.services-header h2 {
+  font-size: 2.8em;
+  color: var(--text-color);
+  letter-spacing: 1.2px;
+  margin-bottom: 0.6em;
+  position: relative;
+  animation: fadeInUp 1s ease-out;
+  background-image: linear-gradient(
+    79deg, 
+    var(--primary-dark) 0%, 
+    var(--primary-color) 50%, 
+    var(--primary-dark) 100%
+  );
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.services-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: var(--primary-color);
+  transform: translateX(-50%);
+  transition: width 0.4s ease;
+}
+
+.services-header h2:hover::after {
+  width: 120px;
+}
+
+.services-header p {
+  font-size: 1.3em;
+  color: var(--subtext-color);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+  opacity: 0;
+  animation: fadeIn 1.2s ease-out forwards 0.3s;
+}
+
+.services-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5em;
+  padding: 0 1em;
+}
+
+.service-item {
+  flex: 1 1 25%;
+  max-width: 340px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2em;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  box-shadow: 
+    0 4px 12px var(--shadow-color),
+    inset 0 0 6px var(--highlight-color);
+  transition: all 0.4s ease;
+  opacity: 0;
+  animation: waveIn 0.8s ease-out forwards;
+  border: 1px solid rgba(50, 200, 255, 0.1);
+}
+
+.service-item:nth-child(1) { animation-delay: 0.1s; }
+.service-item:nth-child(2) { animation-delay: 0.2s; }
+.service-item:nth-child(3) { animation-delay: 0.3s; }
+.service-item:nth-child(4) { animation-delay: 0.4s; }
+.service-item:nth-child(5) { animation-delay: 0.5s; }
+.service-item:nth-child(6) { animation-delay: 0.6s; }
+
+.service-item:hover {
+  transform: scale(1.06);
+  box-shadow: 
+    0 8px 20px rgba(10, 100, 180, 0.25),
+    inset 0 0 8px var(--highlight-color);
+  backdrop-filter: blur(12px);
+}
+
+.service-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--primary-dark)
+  );
+  transition: width 0.4s ease;
+}
+
+.service-item:hover::before {
+  width: 100%;
+}
+
+.service-item i {
+  font-size: 2.6em;
+  color: var(--primary-dark);
+  margin-bottom: 0.8em;
+  transition: all 0.4s ease;
+}
+
+.service-item:hover i {
+  transform: scale(1.15);
+  color: var(--primary-color);
+  filter: drop-shadow(0 0 10px var(--glow-color));
+}
+
+.service-item h3 {
+  font-size: 1.4em;
+  color: var(--text-color);
+  margin-bottom: 0.6em;
+  font-weight: 600;
+}
+
+.service-item p {
+  color: var(--subtext-color);
+  font-size: 1em;
+  line-height: 1.5;
+  transition: color 0.3s ease;
+}
+
+.service-item:hover p {
+  color: var(--text-color);
+}
+
+.services-cta {
+  text-align: center;
+  margin-top: 3em;
+}
+
+.services-cta p {
+  font-size: 1.2em;
+  color: var(--subtext-color);
+  margin-bottom: 1.5em;
+  opacity: 0;
+  animation: fadeIn 1.4s ease-out forwards 0.5s;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 0.8em 2em;
+  font-size: 1.1em;
+  color: white;
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark),
+    var(--primary-color)
+  );
+  border-radius: 30px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  border: none;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.cta-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(10, 100, 180, 0.3);
+}
+
+.cta-button:hover::before {
+  left: 100%;
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes waveIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .service-item {
+    flex: 1 1 45%;
+    max-width: 360px;
+  }
+}
+
+@media (max-width: 768px) {
+  .services-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2em;
+  }
+  
+  .services-header h2 {
+    font-size: 2.2em;
+  }
+  
+  .services-header p {
+    font-size: 1.1em;
+  }
+  
+  .service-item {
+    flex: 1 1 100%;
+    max-width: 400px;
+    padding: 1.5em;
+  }
+}
+
+@media (max-width: 480px) {
+  #services {
+    padding: 3em 1em;
+  }
+  
+  .service-item i {
+    font-size: 2.2em;
+  }
+  
+  .service-item h3 {
+    font-size: 1.2em;
+  }
+  
+  .service-item p {
+    font-size: 0.95em;
+  }
+  
+  .cta-button {
+    padding: 0.7em 1.6em;
+    font-size: 1em;
+  }
+}
+</style>

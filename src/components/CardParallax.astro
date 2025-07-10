@@ -1,0 +1,286 @@
+<!-- CardParallax.astro 数据部分 -->
+
+<!-- data -->
+---
+const cards = [
+  {
+    iconClass: "fas fa-seedling",
+    title: "基础版",
+    price: "300/年",
+    descriptionTitle: "小微企业首选",
+    features: ["单页式官网", "极速上线啦", "技术全支持"],
+  },
+  {
+    iconClass: "fas fa-trophy",
+    title: "优选版",
+    price: "500/年",
+    descriptionTitle: "中小企业推荐",
+    features: ["单页式官网", "极速上线啦", "SEO全优化", "技术全支持"],
+  },
+  {
+    iconClass: "fas fa-cogs",
+    title: "定制版",
+    price: "1000+/年",
+    descriptionTitle: "定制专属",
+    features: ["定制化方案", "推广全支持", "内容有保障", "技术全支持"],
+  },
+];
+const cardImg = {
+    front: "./assets/images/glass.png",
+    back: "./assets/images/glass.png"
+}
+---
+
+
+<!-- html -->
+<section id="home">
+  <div class="parallaxFlipping">
+    <div class="flippingCards">
+      {cards.map((card, index) => (
+        <div class="flippingCard" ontouchstart="this.classList.toggle('hover');" key={index}>
+          <div class="cardItem">
+            <div class="cardItem-front" style={`background-image: url(${cardImg.front})`}>
+              <div class="cardItem-inner">
+                <i class={card.iconClass}></i>
+                <h1>{card.title}</h1>
+                <h3>{card.price}</h3>
+              </div>
+            </div>
+            
+            <div class="cardItem-back" style={`background-image: url(${cardImg.back})`}>
+              <div class="cardItem-inner">
+                <h3>{card.descriptionTitle}</h3>
+                <ul>
+                  {card.features.map((feature, idx) => (
+                    <li key={idx}>{feature}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+<!-- style -->
+<style>
+#home {
+  width: 100%;
+}
+
+.parallaxFlipping {
+  width: 100%;
+  background-color: rgb(var(--wave-color));
+  margin: 0 auto;
+}
+
+.parallaxFlipping .flippingCards {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+  padding: 5em;
+  padding-bottom: 2em;
+}
+
+.parallaxFlipping .flippingCard {
+  flex: 1;
+  width: 100%;
+  max-width: 300px;
+  min-width: 250px;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  position: relative;
+  border-radius: 50%;  
+}
+
+.parallaxFlipping .flippingCard:nth-child(2) {
+  flex: 0 0 38vw;
+  max-width: 380px;
+  min-width: 300px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+}
+
+.parallaxFlipping .cardItem {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  position: relative;
+}
+
+/* .parallaxFlipping .flippingCard:nth-child(2) .cardItem {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+.parallaxFlipping .flippingCard .cardItem {
+  animation: breathe 3s ease-in-out infinite;
+  animation-delay: 1.5s;
+} */
+
+@keyframes breathe {
+
+  0%,
+  100% {
+    transform: scale(0.9);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+}
+
+
+@keyframes breathe2 {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.9);
+  }
+}
+
+.parallaxFlipping .flippingCard:nth-child(2):hover .cardItem {
+  animation: none;
+}
+
+.parallaxFlipping .flippingCard:hover .cardItem {
+  animation: none;
+
+}
+
+
+.parallaxFlipping .cardItem h1 {
+  font-size: 2em;
+  line-height: 2em;
+  letter-spacing: 0.1em;
+}
+
+.parallaxFlipping .cardItem h3 {
+  font-size: 1.5em;
+}
+
+.parallaxFlipping .cardItem .cardItem-front i {
+  font-size: 2.5em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.parallaxFlipping .cardItem .cardItem-front {
+  color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(10, 100, 200, 0.98);
+}
+
+.parallaxFlipping .cardItem .cardItem-back {
+  color: rgba(255, 255, 255, 0.1);
+}
+.parallaxFlipping .cardItem .cardItem-back li {
+  font-size: 1.2em;
+  line-height: 1.5em;
+}
+
+.parallaxFlipping .cardItem-front,
+.parallaxFlipping .cardItem-back {
+  /* background-image: url("../images/glass.png"); */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1), color 3s ease-in-out;
+  backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  text-align: center;  
+}
+
+.parallaxFlipping .cardItem-front::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(247, 247, 247, 0.2) 0%, rgba(0, 0, 0, 0.726) 100%);
+  border-radius: 50%;
+  z-index: 1;
+  backface-visibility: hidden;
+}
+
+
+.parallaxFlipping .cardItem-back {
+  /* background: linear-gradient(135deg, #2a2a72 0%, #009ffd 100%); */
+  background-color: rgb(2, 34, 34);
+  transform: rotateY(180deg);
+  transform-style: preserve-3d;
+}
+
+.parallaxFlipping .cardItem-back ul {
+  list-style: none;
+}
+
+.parallaxFlipping .cardItem-front {
+  transform: rotateY(0deg);
+  transform-style: preserve-3d;
+}
+
+.parallaxFlipping .cardItem:hover .cardItem-front {
+  transform: rotateY(-180deg);
+}
+
+.parallaxFlipping .cardItem:hover .cardItem-back {
+  transform: rotateY(0deg);
+  color: rgba(255, 255, 255, 1.0);
+}
+
+.parallaxFlipping .cardItem-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  padding: 2rem;
+  transform: translate(-50%, -50%) translateZ(60px) scale(0.94);
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.parallaxFlipping .flippingCard:nth-child(2) .cardItem-inner {
+  padding: 2.6rem;
+  transform: translate(-50%, -50%) translateZ(78px) scale(0.94);
+}
+
+
+@media (max-width: 820px) {
+  .parallaxFlipping .flippingCards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .parallaxFlipping .flippingCard {
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+    min-height: 300px;
+    flex: none;
+  }
+
+  .parallaxFlipping .flippingCard:nth-child(2) {
+    width: 100%;
+    max-width: 380px;
+    height: 380px;
+    min-height: 380px;
+    flex: none;
+  }
+}
+</style>

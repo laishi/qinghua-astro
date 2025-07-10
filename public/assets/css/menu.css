@@ -1,0 +1,199 @@
+:root {
+  --menu-height: 30vh;
+}
+
+.menu-content {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: var(--menu-height);
+  text-align: center;
+  bottom: 0;
+}
+
+.menu-content .menus {
+  position: relative;
+  display: flex;
+  gap: 0.1rem;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 38vh;
+  min-width: 800px;
+  margin: 0 auto;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.menu-content .menus .menu {
+  position: relative;
+  display: flex;
+  direction: row;
+  flex: 1;
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+  transition: flex 0.5s ease-in-out, opacity 0.3s ease-in-out, transform 0.5s ease-in-out;
+  cursor: pointer;
+  perspective: 1000px;
+}
+
+.menu-content .menus .menu:not(:nth-child(3)) {
+  opacity: 0.5;
+}
+
+.menu-content .menus .logoIcon {
+  opacity: 0.9;
+}
+
+.menu-content .menus .menu .title {
+  position: absolute;
+  width: 100%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s ease-in-out;
+}
+
+.menu-content .menus .menu .maintitle {
+  height: 90%;
+  top: 0;
+  font-size: 1.0em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.menu-content .menus .menu .maintitle .titleIcon {
+  width: 100%;
+  font-size: 3em;
+  animation: breathe 2.5s ease-in-out infinite;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes breathe {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.menu-content .menus .menu .subtitle {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 49%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  overflow: hidden;
+  color: rgba(200, 200, 200, 0.8);
+}
+
+.menu-content .menus .menu .subtitle p {
+  opacity: 0;
+  transform: translateY(15em);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.menu-content .menus .menu:hover .subtitle p:nth-child(1) {
+  opacity: 1;
+  transform: translateY(0.8em);
+  transition-delay: 0.1s;
+}
+
+.menu-content .menus .menu:hover .subtitle p:nth-child(2) {
+  opacity: 1;
+  transform: translateY(1em);
+  transition-delay: 0.3s;
+}
+
+.menu-content .menus .menu:not(:nth-child(3)):hover .maintitle {
+  font-size: 1.2em;
+  height: 60%;
+}
+
+.menu-content .menus .menu:hover .subtitle {
+  height: 100%;
+}
+
+.menu-content .door {
+  position: absolute;
+  top: 0;
+  width: 55%;
+  height: 100%;
+  background-color: rgba(0, 50, 100, 200, 0.5);
+  transform-style: preserve-3d;
+}
+
+.menu-content .door-left {
+  left: 0;
+  transform-origin: left center;
+  transition: transform 0.8s ease-in-out;
+}
+
+.menu-content .door-right {
+  right: 0;
+  transform-origin: right center;
+  transition: transform 0.8s ease-in-out;
+}
+
+.menu-content .menu:hover .door-left {
+  transform-origin: left center;
+  transform: rotateY(90deg);
+}
+
+.menu-content .menu:hover .door-right {
+  transform-origin: right center;
+  transform: rotateY(-90deg);
+}
+
+.menu-content .menus .menu:first-child {
+  border-top-left-radius: 1em;
+}
+
+.menu-content .menus .menu:last-child {
+  border-top-right-radius: 1em;
+}
+
+.menu-content .menus .menu:hover {
+  flex: 1.5;
+  opacity: 0.9;  
+}
+
+.menu-content .menus .menu.logoIcon:hover .maintitle .menuIcon {
+  animation: ball 2s ease-in-out infinite alternate;
+}
+
+.menuIcon {
+  animation: ball 2s ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-delay: -5s;
+  opacity: 0.9;
+  font-size: 2em;
+  cursor: pointer;
+  transform: translateY(-3%);
+}
+
+@keyframes ball {
+  to { transform: translateY(3%); }
+}

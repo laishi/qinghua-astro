@@ -1,0 +1,30 @@
+:root {
+  --background-color: 200, 200, 200;
+  --wave-color: 200, 200, 200;
+  --font-mono: 'Microsoft YaHei Mono', 'DengXian', 'Consolas', 'Menlo', 'SFMono-Regular', 'Courier New', monospace;
+}
+
+/* 系统深色模式优先级（自动适配） */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: 200, 200, 200;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: rgb(var(--background-color));
+}
